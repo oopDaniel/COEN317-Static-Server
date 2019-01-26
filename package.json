@@ -1,0 +1,13 @@
+{
+  "name": "static-file-server",
+  "version": "1.0.0",
+  "description": "A static file server using event-driven architecture.",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "start": "nodemon --exec babel-node index.js"
+  },
+  "author": "Daniel Chiang",
+  "license": "ISC"
+}
