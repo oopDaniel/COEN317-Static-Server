@@ -11,7 +11,7 @@
     "@babel/preset-env": "^7.3.1"
   },
   "scripts": {
-    "start": "nodemon --exec babel-node index.js -- -document_root \"/home/moazzeni/webserver_files\" -port 8888"
+    "start": "nodemon --exec babel-node index.js -- -- -document_root ./static -port 8888"
   },
   "author": "Daniel Chiang",
   "license": "ISC"
