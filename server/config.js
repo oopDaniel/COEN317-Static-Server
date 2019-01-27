@@ -1,5 +1,5 @@
 let PORT = 8080
-let ROOT = './static'
+let ROOT = __dirname + '/static'
 const args = process.argv.slice(2)
 
 for (let i = 0; i < args.length; i++) {
