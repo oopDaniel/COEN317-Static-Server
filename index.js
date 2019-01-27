@@ -1,9 +1,6 @@
 import http from 'http'
+import server from './server'
+import { PORT, ROOT } from './config'
 
-const PORT = 80
-
-http.createServer((req, res) => {
-  res.writeHead(200, {'Content-Type': 'text/plain'})
-  res.write('Hello World')
-  res.end()
-}).listen(PORT, () => console.log('Server started.'))
+http.createServer(server(ROOT))
+  .listen(PORT, () => console.log(`Listening to ${PORT} for files on ${ROOT}.`))

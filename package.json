@@ -6,7 +6,7 @@
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
-    "start": "nodemon --exec babel-node index.js"
+    "start": "nodemon --exec babel-node index.js -- -document_root \"/home/moazzeni/webserver_files\" -port 8888"
   },
   "author": "Daniel Chiang",
   "license": "ISC"
