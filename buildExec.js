@@ -14,7 +14,7 @@ for (let i = 0; i < args.length; i++) {
 // Generate the config json since pkg doesn't support command line args...
 const pkgConfig = {
   scripts: 'bundle.tmp.js',
-  assets: `${ROOT}/**/*`
+  assets: getAllFiles(ROOT)
 }
 const json = JSON.stringify(pkgConfig)
 try {
@@ -49,4 +49,23 @@ function cleanup () {
     fs.unlinkSync('bundle.tmp.js')
     fs.unlinkSync('bundle.tmp')
   } catch (e) {}
+}
+
+function getAllFiles (root) {
+  const valid = []
+  try {
+    const names = fs.readdirSync(root)
+    names.forEach(fileName => {
+      const fullName = `${root}/${fileName}`
+      try {
+        fs.accessSync(fullName, fs.constants.R_OK)
+        if (fs.statSync(fullName).isDirectory()) {
+          valid.push(...getAllFiles(fullName))
+        } else {
+          valid.push(fullName)
+        }
+      } catch (e) {}
+    })
+  } catch (e) {}
+  return valid
 }
