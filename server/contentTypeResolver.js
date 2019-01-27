@@ -1,4 +1,6 @@
-export default (fileName) => {
+// Get 'content-type' by file name
+
+export default fileName => {
   const fileExt = fileName.split('.').pop()
 
   switch (fileExt) {
