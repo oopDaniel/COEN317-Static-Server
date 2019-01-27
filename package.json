@@ -8,10 +8,19 @@
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@babel/node": "^7.2.2",
-    "@babel/preset-env": "^7.3.1"
+    "@babel/preset-env": "^7.3.1",
+    "pkg": "^4.3.7",
+    "rollup": "^1.1.2",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-node-resolve": "^4.0.0"
   },
   "scripts": {
-    "start": "nodemon --exec babel-node index.js -- -- -document_root ./static -port 8888"
+    "dev": "nodemon --exec babel-node index.js -- -- -document_root ./static -port 8888",
+    "start": "babel-node index.js -- -document_root ./static -port 8888",
+    "build": "node rollup.js"
+  },
+  "pkg": {
+    "scripts": "**/*.js"
   },
   "author": "Daniel Chiang",
   "license": "ISC"
