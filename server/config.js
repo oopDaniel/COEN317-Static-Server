@@ -2,7 +2,7 @@
 
 import path from 'path'
 let PORT = 8080
-let ROOT = path.resolve(__dirname, '/static')
+let ROOT = path.resolve(__dirname, '..', 'static')
 const args = process.argv.slice(2)
 
 for (let i = 0; i < args.length; i++) {
