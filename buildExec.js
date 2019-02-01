@@ -1,47 +1,38 @@
-require('./rollup')
+cleanup()
 const path = require('path')
 const fs = require('fs')
+const promisify = require('util').promisify
+const writeFile = promisify(fs.writeFile)
+const readFile = promisify(fs.readFile)
+const { spawn } = require('child_process')
+const { exec } = require('pkg')
+const bundle = require('./rollup')
 
 // Parse args
-let PORT = 8080
-let ROOT = path.resolve(__dirname, 'static')
-const args = process.argv.slice(2)
-for (let i = 0; i < args.length; i++) {
-  if (args[i] === '-port') PORT = args[i++ + 1]
-  if (args[i] === '-document_root') ROOT = args[i++ + 1]
-}
+let { PORT = 8080, ROOT = path.join('./static') } = parseArgs()
 
-// Generate the config json since pkg doesn't support command line args...
+// Generate the config json since pkg doesn't support CLI args :(
 const pkgConfig = {
   scripts: 'bundle.tmp.js',
-  assets: getAllFiles(ROOT)
+  assets: getAllValidAssets(ROOT)
 }
 const json = JSON.stringify(pkgConfig)
-try {
-  const data = fs.readFileSync('bundle.js', 'utf8')
-  // Override the configs if there's any passed from command line
-  const result = data
-    .replace(/PORT = 8080/g, `PORT = ${PORT}`)
-    .replace(/ROOT = path\.resolve\(__dirname, 'static'\)/g, `ROOT = "${ROOT}"`)
-  fs.writeFileSync('bundle.tmp.js', result, 'utf8')
-  fs.writeFileSync('stupid-pkg.json', json, 'utf8')
-} catch (err) {
-  console.log('err', err)
-  cleanup()
-}
 
-const { exec } = require('pkg')
-exec(['-t', 'macos', '-c', 'stupid-pkg.json', 'bundle.tmp.js'])
+bundle
+  .then(() => readFile('bundle.js', 'utf8'))
+  .then(replaceArgsInCode) // Override the configs if any passed from CLI
+  .then(code => writeFile('bundle.tmp.js', code, 'utf8'))
+  .then(writeFile('stupid-pkg.json', json, 'utf8'))
+  .then(() => exec(['-t', 'macos', '-c', 'stupid-pkg.json', 'bundle.tmp.js']))
   .then(() => {
-    const { spawn } = require('child_process')
     const proc = spawn('./bundle.tmp')
     proc.stdout.on('data', data => console.log('stdout: ' + data.toString()))
-    proc.stderr.on('data', data => {
-      console.log('stderr: ' + data.toString())
-      cleanup()
-    })
+    proc.stderr.on('data', data => console.log('stderr: ' + data.toString()))
   })
-  .catch(cleanup)
+  .catch(err => {
+    console.log('err', err)
+    cleanup()
+  })
 
 function cleanup () {
   try {
@@ -51,16 +42,16 @@ function cleanup () {
   } catch (e) {}
 }
 
-function getAllFiles (root) {
+function getAllValidAssets (root) {
   const valid = []
   try {
     const names = fs.readdirSync(root)
     names.forEach(fileName => {
       const fullName = `${root}/${fileName}`
       try {
-        fs.accessSync(fullName, fs.constants.R_OK)
+        fs.accessSync(fullName, fs.constants.R_OK) // Permission check
         if (fs.statSync(fullName).isDirectory()) {
-          valid.push(...getAllFiles(fullName))
+          valid.push(...getAllValidAssets(fullName))
         } else {
           valid.push(fullName)
         }
@@ -68,4 +59,21 @@ function getAllFiles (root) {
     })
   } catch (e) {}
   return valid
+}
+
+function parseArgs () {
+  const args = process.argv.slice(2)
+  let root
+  let port
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '-port') port = args[i++ + 1]
+    if (args[i] === '-document_root') root = args[i++ + 1]
+  }
+  return { ROOT: root, PORT: port }
+}
+
+function replaceArgsInCode (code) {
+  return code
+    .replace(/PORT = 8080/g, `PORT = ${PORT}`)
+    .replace(/ROOT = path\.join\(__dirname, 'static'\)/g, `ROOT = "${ROOT}"`)
 }
