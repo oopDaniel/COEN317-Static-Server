@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# This script requires root permission. Please use `sudo` to run it.
+
+# Creates temp dir which stays the same every time this script executes
+function setTEMP_DIR()
+{
+  local NEW_OS_SUGGESTED_TEMP_FILE=$(mktemp -t asdXXXXX)
+  local OS_ROOT_TEMP_DIR=$(dirname ${NEW_OS_SUGGESTED_TEMP_FILE})
+  rm ${NEW_OS_SUGGESTED_TEMP_FILE}
+  TEMP_DIR=${OS_ROOT_TEMP_DIR}/node
+  mkdir -p ${TEMP_DIR}
+}
+
+# Test if there's Node installed
+node -v &> /dev/null
+if [ $? -eq 0 ]; then
+    # Found Node :)
+    echo "$(which node)"
+else
+    # Need to install Node :(
+    setTEMP_DIR
+    cd ${TEMP_DIR}
+
+    # Do we have `n` here?
+    if [[ ! -d "n" ]]; then
+        # Use https in case of misconfiged ssh in git
+        git clone https://github.com/tj/n.git ${TEMP_DIR}/n >/dev/null
+    fi
+
+    # Install `n`, which will be used in installing Node
+    cd n
+    make install
+
+    # Install and activate the lts version of Node
+    ./bin/n lts
+
+    # Find and output Node's bin directory
+    PATH=$PATH:/usr/local/bin # In case it's not in the path
+    NODE=$(which node)
+    echo $(dirname ${NODE})
+fi
