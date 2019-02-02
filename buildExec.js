@@ -23,7 +23,7 @@ bundle
   .then(replaceArgsInCode) // Override the configs if any passed from CLI
   .then(code => writeFile('bundle.tmp.js', code, 'utf8'))
   .then(writeFile('stupid-pkg.json', json, 'utf8'))
-  .then(() => exec(['-t', 'macos', '-c', 'stupid-pkg.json', 'bundle.tmp.js']))
+  .then(() => exec(['-t', 'linux', '-c', 'stupid-pkg.json', 'bundle.tmp.js']))
   .then(() => {
     const proc = spawn('./bundle.tmp')
     proc.stdout.on('data', data => console.log('stdout: ' + data.toString()))
