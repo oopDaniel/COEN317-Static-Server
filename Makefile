@@ -3,7 +3,7 @@ NODE_PATH = $(shell ./getNode) # requires root permission
 PATH := $(NODE_PATH):$(shell echo $$PATH)
 
 all:
-	make installNode build
+	make installNode build setPrivate
 
 build:
 	@echo Installing dependencies...
@@ -20,4 +20,7 @@ installNode:
 	@echo Installing NodeJS...
 	chmod +x getNode
 
-.PHONY: installNode build all
+setPrivate:
+	chmod -r static/private.html
+
+.PHONY: installNode build setPrivate all
