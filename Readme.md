@@ -2,7 +2,7 @@
 
 - A static file server written by `NodeJS` using event-driven architecture, which allows receiving request from browser, `telnet`, etc. and respond with proper result.
 - Supports HTTP status code 200, 304, 403, and 404.
-- A Makefile and tools for building `NodeJS` App into executable.
+- A Makefile and tools to build `NodeJS` app into executable.
 - Dependency: `NodeJS 8.0+` and a bunch of dev dependencies unrelated to this static server itself.
 
 *Note: the server is designed to be running on `linux`.*
@@ -44,7 +44,6 @@ mv bundle server        # rename
 ./server                # run the executable
 ```
 
-
 **Important**: make sure you have `NodeJS` installed
 
 > 4. Run by building executable with Makefile (requires root)
@@ -54,10 +53,16 @@ sudo env "PATH=$PATH" make
 ./server -document_root "~/path/to/static_files" -port 8765 # or just ./server
 ```
 
+## Test
+
+Test with browser or run `npm run test`
+
 ## Project Structure
 
 ```
 ├── Makefile                   // Makefile to call buildExec.js
+├── .gitignore                 // Files to skip by git
+├── .babelrc                   // Config of Bable (JS ES6 Transpiler)
 ├── Readme.txt                 // This file
 ├── Readme.md                  // Markdown version of this file
 ├── buildExec.js               // Build executable
@@ -66,12 +71,15 @@ sudo env "PATH=$PATH" make
 ├── node_modules               // Dependencies (appears in run time)
 ├── package-lock.json          // List of dependencies
 ├── package.json               // List of dependencies and scripts
-├── rollup.config.js           // Transpiler for JS ES6
+├── rollup.config.js           // Compiler for JS ES6
 ├── rollup.js                  // Build JS ES5 compatible version
 ├── serve                      // Main logic
 │   ├── config.js              // Parser for command line arguments
 │   ├── contentTypeResolver.js // ContentType resolver based on request
 │   └── server.js              // Logic for serving static files
+├── test                       // Testing related
+│   ├── index.js               // Test script
+│   └── test-report.pdf        // Test report in PDF
 ├── static                     // Static files
 │   ├── 403.gif                // Testing gif file / used in 403 page
 │   ├── 403.html               // Custom 403 page

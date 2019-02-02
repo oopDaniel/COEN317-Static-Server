@@ -9,15 +9,19 @@
     "@babel/core": "^7.2.2",
     "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.3.1",
+    "axios": "^0.18.0",
+    "mocha": "^5.2.0",
     "pkg": "^4.3.7",
     "rollup": "^1.1.2",
     "rollup-plugin-babel": "^4.3.2",
-    "rollup-plugin-node-resolve": "^4.0.0"
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "should": "^13.2.3"
   },
   "scripts": {
     "dev": "nodemon --exec babel-node index.js -- -- -document_root ./static -port 8888",
     "start": "babel-node index.js -- -document_root ./static -port 8888",
-    "build": "node rollup.js"
+    "build": "node rollup.js",
+    "test": "mocha"
   },
   "pkg": {
     "scripts": "**/*.js"
