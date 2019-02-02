@@ -6,6 +6,8 @@ all:
 	make installNode build
 
 build:
+	@echo Installing dependencies...
+	npm i
 	@echo Installing pkg...
 	## pkg only supports global install
 	npm i -g pkg
@@ -17,7 +19,5 @@ build:
 installNode:
 	@echo Installing NodeJS...
 	chmod +x getNode
-	node -v
-	npm -v
 
 .PHONY: installNode build all
