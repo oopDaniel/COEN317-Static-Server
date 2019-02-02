@@ -1,1 +1,6 @@
 node_modules
+readme.txt
+bundle.tmp
+bundle.tmp.js
+bundle.js
+stupid-pkg.json
